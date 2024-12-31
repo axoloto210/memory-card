@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Card } from "../../ui/Card/Card";
 
 type InitialCard = Readonly<{
-    imageName:string;
-    tag: number;
-}>
+  imageName: string;
+  tag: number;
+}>;
 
 type Card = InitialCard & {
-  isOpen: boolean;
-  isClear: boolean;
+  cardId: number;
+  isFlipped: boolean;
+  isMatched: boolean;
 };
 
 const initialCards = [
@@ -24,12 +25,15 @@ const initialCards = [
 
 function initiateCards() {
   const duplocatedCards = initialCards
-    .flatMap((card) => [card, card]) //duplicate cards
+    .flatMap((card) => [
+      { ...card, cardId: 2 * card.tag - 1 },
+      { ...card, cardId: 2 * card.tag },
+    ]) //duplicate cards
     .map((card) => {
       return {
         ...card,
-        isOpen: false,
-        isClear: false,
+        isFlipped: false,
+        isMatched: false,
       };
     });
   return shuffle(duplocatedCards);
@@ -37,10 +41,10 @@ function initiateCards() {
 
 /**
  * Fisher-Yates shuffle
- * 
- * @param array 
- * @returns 
- */ 
+ *
+ * @param array
+ * @returns
+ */
 function shuffle<T>(array: T[]) {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -51,16 +55,101 @@ function shuffle<T>(array: T[]) {
 }
 
 export const MemoryCardGame = () => {
-  const [cards, setCards] = useState(initiateCards());
+  const [cards, setCards] = useState<Card[]>(initiateCards());
+  const [isGameEnd, setIsGameEnd] = useState(false);
+
+  const [isDisable, setIsDisable] = useState(false);
+
+  const checkGameEnd = (newCards: Card[]) => {
+    setIsGameEnd(
+      newCards.every((card) => {
+        return card.isMatched === true;
+      })
+    );
+  };
+
+  const flippedCardTag = () => {
+    return cards.find((card) => {
+      return card.isFlipped === true && card.isMatched === false;
+    })?.tag;
+  };
+
+  const clickCardHandler = (clickedCard: Card) => {
+    if (clickedCard.isFlipped) {
+      return;
+    }
+    setIsDisable(true);
+
+    const flippedTag = flippedCardTag();
+
+    const isFirstFlip = flippedTag === undefined;
+
+    const newCards: Card[] = cards.map((card) => {
+      return clickedCard.cardId === card.cardId
+        ? {
+            ...card,
+            isFlipped: true,
+          }
+        : card;
+    });
+
+    if (!isFirstFlip) {
+      if (clickedCard.tag === flippedTag) {
+        const matchedCards = newCards.map((card) => {
+          return card.tag === flippedTag
+            ? {
+                ...card,
+                isMatched: true,
+              }
+            : card;
+        });
+        setCards(matchedCards);
+        setIsDisable(false);
+
+        setTimeout(() => {
+          checkGameEnd(matchedCards);
+        }, 500);
+      } else {
+        setCards(newCards);
+        // when flipped cards are two, reset flipped status.
+        setTimeout(() => {
+          setCards(
+            newCards.map((card) => {
+              return card.tag === flippedTag ||
+                card.cardId === clickedCard.cardId
+                ? {
+                    ...card,
+                    isFlipped: false,
+                  }
+                : card;
+            })
+          );
+          setIsDisable(false);
+        }, 1000);
+      }
+    } else {
+      setCards(newCards);
+      setIsDisable(false);
+    }
+  };
 
   return (
     <>
       <div>
-        <h1>Memory Card Game</h1>
+        <h1>Memory Card</h1>
       </div>
+      {isGameEnd && <h2>Clear！！！</h2>}
       <div className="card_area">
         {cards.map((card) => {
-          return <Card cardNumber={card.tag} imageName={card.imageName} />;
+          return (
+            <button
+              key={card.cardId}
+              onClick={() => clickCardHandler(card)}
+              disabled={isDisable}
+            >
+              <Card imageName={card.imageName} isFlipped={card.isFlipped} />
+            </button>
+          );
         })}
       </div>
     </>
