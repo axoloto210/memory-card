@@ -1,0 +1,21 @@
+@use "/src/styles/variables";
+.title {
+  @media only screen and (max-width: variables.$bp-tablet) {
+    font-size: 28px;
+  }
+}
+
+.start_button {
+  text-align: center;
+  width: 120px;
+  margin: auto;
+  font-weight: bold;
+  border-radius: 100vh;
+  border-bottom: 7px solid #27acd9;
+  border-color: #27acd9;
+  background: #27acd9;
+  color: #fff;
+  &:hover {
+    border-color: #27acd9;
+  }
+}
