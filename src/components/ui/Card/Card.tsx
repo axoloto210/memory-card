@@ -1,4 +1,4 @@
-import styles from "./Card.module.scss";
+import style from "./Card.module.scss";
 
 type Props = {
   imageName: string;
@@ -6,20 +6,16 @@ type Props = {
 };
 
 export const Card = (props: Props) => {
-  const IMAGE_WIDTH = 160;
-  const IMAGE_HEIGHT = 160;
-
+    
   return (
-    <div className={styles.card}>
+    <div className={style.card}>
         {props.isFlipped ?
       <img
         src={`${props.imageName}`}
-        width={IMAGE_WIDTH}
-        height={IMAGE_HEIGHT}
+        className={style.card_image}
       /> : <img
       src={`card.png`}
-        width={IMAGE_WIDTH}
-        height={IMAGE_HEIGHT}
+        className={style.card_image}
       />
         }
     </div>

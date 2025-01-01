@@ -1,3 +1,19 @@
-.card{
-    background-color: gray;
+@use '/src/styles/variables';
+
+.card {
+  background-color: gray;
+}
+
+.card_image {
+  width: 160px;
+  height: 160px;
+
+  @media only screen and (max-width: variables.$bp-mobile) {
+    width: 60px;
+    height: 60px;
+  }
+  @media only screen and (max-width: variables.$bp-tablet) and (min-width: variables.$bp-mobile){
+    width: 100px;
+    height: 100px;
+  }
 }
