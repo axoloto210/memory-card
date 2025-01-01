@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Card } from "../../ui/Card/Card";
+import style from "./MemoryCardGame.module.scss"
 
 type InitialCard = Readonly<{
   imageName: string;
@@ -136,7 +137,7 @@ export const MemoryCardGame = () => {
   return (
     <>
       <div>
-        <h1>Memory Card</h1>
+        <h1 className={style.title}>Memory Card</h1>
       </div>
       {isGameEnd && <h2>Clear！！！</h2>}
       <div className="card_area">
