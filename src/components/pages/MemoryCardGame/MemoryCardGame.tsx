@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { Card } from "../../ui/Card/Card";
-import { Timer } from "../../../utils/timer";
+import Confetti from "react-confetti";
 import { useRegistBestTime } from "../../../hooks/useRegistBestTime";
-import style from './MemoryCardGame.module.scss'
+import { Timer } from "../../../utils/timer";
+import { Card } from "../../ui/Card/Card";
+import style from "./MemoryCardGame.module.scss";
 
 type InitialCard = Readonly<{
   imageName: string;
@@ -171,19 +172,28 @@ export const MemoryCardGame = () => {
 
   return (
     <>
-        <h1>Memory Card</h1>
-        <div style={{display:'flex', height:'60px'}}>
+      <h1>Memory Card</h1>
+      <div style={{ display: "flex", height: "60px" }}>
         {gameStatus === GAME_STATUS.START && (
           <button className={style.start_button} onClick={clickStartHandler}>
             START
           </button>
         )}
-      <div style={{marginLeft:'auto'}}>自己ベスト：{bestTime}</div>
+        <div style={{ marginLeft: "auto" }}>自己ベスト：{bestTime}</div>
       </div>
       {gameStatus === GAME_STATUS.END && (
         <h2>
           Clear！！！ time:{timerRef.current?.getFormattedTime() ?? "--:--:--"}
         </h2>
+      )}
+      {gameStatus === GAME_STATUS.END && (
+        <Confetti
+          width={3200}
+          height={3200}
+          numberOfPieces={200}
+          gravity={0.3}
+          recycle={false}
+        />
       )}
       <div className="card_area">
         {cards.map((card) => {
