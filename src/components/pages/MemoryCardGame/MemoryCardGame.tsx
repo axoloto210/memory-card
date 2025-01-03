@@ -93,13 +93,14 @@ export const MemoryCardGame = () => {
   };
 
   const checkGameEnd = (newCards: Card[]) => {
-    setGameStatus(
-      newCards.every((card) => {
-        return card.isMatched === true;
-      })
-        ? GAME_STATUS.END
-        : GAME_STATUS.IN_GAME
-    );
+    const gameIsEnd = newCards.every((card) => {
+      return card.isMatched === true;
+    })
+      ? GAME_STATUS.END
+      : GAME_STATUS.IN_GAME;
+
+    setGameStatus(gameIsEnd);
+
     timerRef.current?.stop();
 
     setBestTime(timerRef.current?.getFormattedTime() ?? "99:59:59");
