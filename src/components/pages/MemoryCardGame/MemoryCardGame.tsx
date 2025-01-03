@@ -99,11 +99,12 @@ export const MemoryCardGame = () => {
       ? GAME_STATUS.END
       : GAME_STATUS.IN_GAME;
 
-    setGameStatus(gameIsEnd);
+    if (gameIsEnd === GAME_STATUS.END) {
+      setGameStatus(gameIsEnd);
+      timerRef.current?.stop();
 
-    timerRef.current?.stop();
-
-    setBestTime(timerRef.current?.getFormattedTime() ?? "99:59:59");
+      setBestTime(timerRef.current?.getFormattedTime() ?? "99:59:59");
+    }
   };
 
   const flippedCardTag = () => {
